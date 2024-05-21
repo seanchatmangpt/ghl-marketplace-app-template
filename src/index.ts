@@ -23,6 +23,42 @@ const ghl = new GHL();
 
 const port = process.env.PORT;
 
+
+const CLIENT_ID = process.env.GHL_APP_CLIENT_ID || "";
+const REDIRECT_URI = "http://localhost:3000/authorize-handler";
+const SCOPES = [
+  "conversations/message.readonly",
+  "conversations/message.write",
+  "users.readonly",
+];
+
+/**
+ * Constructs the authorization URL with predefined scopes.
+ * @returns {string} - The constructed authorization URL.
+ */
+function constructAuthUrl(): string {
+  const baseUrl = "https://marketplace.gohighlevel.com/oauth/chooselocation";
+  const params = new URLSearchParams({
+    response_type: "code",
+    redirect_uri: REDIRECT_URI,
+    client_id: CLIENT_ID,
+    scope: SCOPES.join(" ")
+  });
+  return `${baseUrl}?${params.toString()}`;
+}
+
+/**
+ * Endpoint to generate the authorization URL with predefined scopes.
+ */
+app.get("/generate-auth-url", (req: Request, res: Response) => {
+  try {
+    const authUrl = constructAuthUrl();
+    res.redirect(authUrl);
+  } catch (error) {
+    res.status(500).send("Failed to generate authorization URL.");
+  }
+});
+
 /*`app.get("/authorize-handler", async (req: Request, res: Response) => { ... })` sets up an example how you can authorization requests */
 app.get("/authorize-handler", async (req: Request, res: Response) => {
   const { code } = req.query;

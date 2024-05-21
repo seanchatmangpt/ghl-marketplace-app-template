@@ -55,6 +55,13 @@ Before you get started, make sure you have the following prerequisites:
 
 This Express server template provides routes for handling authorization and making API calls to GoHighLevel. Here's how you can use it:
 
+### Authorization Flow
+
+```
+https://marketplace.gohighlevel.com/oauth/chooselocation?response_type=code&redirect_uri=http://localhost:3000/authorize-handler&client_id=664a91f1e6e257e89606aba7-lwe77oj5&scope=conversations/message.readonly conversations/message.write
+```
+
+
 ### Authorization
 
 To setup the authorization process, you can add the below URL to redirect url section on Your marketplace app:
@@ -75,7 +82,7 @@ This dummy api calls GHL user api to fetch users for a specific company. Note: Y
 To make an example API call to GoHighLevel, access the following route:
 
 ```
-http://localhost:3000/example-api-call?companyId=your-company-id
+http://localhost:3000/example-api-call?companyId=rwFP2uvWfxtt9N5N7nDa
 ```
 
 Replace `your-company-id` with the company ID for which you want to make the API call. Make sure your aop is installed for that specific company. This route demonstrates making a GET request to the GoHighLevel API using the `ghl.requests` method.
