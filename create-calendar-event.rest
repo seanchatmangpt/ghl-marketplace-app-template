@@ -1,0 +1,103 @@
+@baseUrl = https://services.leadconnectorhq.com
+@accessToken = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoQ2xhc3MiOiJDb21wYW55IiwiYXV0aENsYXNzSWQiOiJyd0ZQMnV2V2Z4dHQ5TjVON25EYSIsInNvdXJjZSI6IklOVEVHUkFUSU9OIiwic291cmNlSWQiOiI2NjRhOTFmMWU2ZTI1N2U4OTYwNmFiYTctbHdlNzdvajUiLCJjaGFubmVsIjoiT0FVVEgiLCJwcmltYXJ5QXV0aENsYXNzSWQiOiJyd0ZQMnV2V2Z4dHQ5TjVON25EYSIsIm9hdXRoTWV0YSI6eyJzY29wZXMiOlsiY29udmVyc2F0aW9ucy9tZXNzYWdlLnJlYWRvbmx5IiwiY29udmVyc2F0aW9ucy9tZXNzYWdlLndyaXRlIiwidXNlcnMucmVhZG9ubHkiLCJjb250YWN0cy5yZWFkb25seSIsImNvbnRhY3RzLndyaXRlIiwiY2FsZW5kYXJzLnJlYWRvbmx5IiwiY2FsZW5kYXJzLndyaXRlIiwiY2FsZW5kYXJzL2dyb3Vwcy5yZWFkb25seSIsImNhbGVuZGFycy9ncm91cHMud3JpdGUiLCJjYWxlbmRhcnMvcmVzb3VyY2VzLnJlYWRvbmx5IiwiY2FsZW5kYXJzL3Jlc291cmNlcy53cml0ZSIsImNhbGVuZGFycy9ldmVudHMucmVhZG9ubHkiLCJjYWxlbmRhcnMvZXZlbnRzLndyaXRlIiwib2F1dGgud3JpdGUiLCJvYXV0aC5yZWFkb25seSJdLCJjbGllbnQiOiI2NjRhOTFmMWU2ZTI1N2U4OTYwNmFiYTciLCJjbGllbnRLZXkiOiI2NjRhOTFmMWU2ZTI1N2U4OTYwNmFiYTctbHdlNzdvajUiLCJhZ2VuY3lQbGFuIjoiYWdlbmN5X21vbnRobHlfNDk3In0sImlhdCI6MTcxNjUwMDA0NS40NjMsImV4cCI6MTcxNjU4NjQ0NS40NjN9.ve1VXr6HkIHfTZIDWRZusJDj0qscPND9gydMCpdCxs9P7MVNBdUPx2A0_5vY3VnIEZuDYICkgrbkrvjoR6rl8uWfIQbVKw-CbzVVlfqWmQMiG05Y-CWQY-wUP8SXneRpNPw5O2bk29QAC9lhZsv58chJE4n21FTqEX0jt6hhqfssj2T9wWl_ZmxkdLGLJiai72TItLvDyQaeHqa0crEaSGCOsp5e1hzeHxYjofKf23UhjHvhKqAfkx2r50AuNOp4Jxugp2TITDYVanNg9i2T2jNLur0VHCq4y255hNpX9fPEa40wwVSjYeSrpzcOgLSHqVyARuEW1Z5hcgnXdnS-CrD8Kia49m5m55G0emoDjqvPGGrZV6wPy20TbKEO5h6ghTd8sU32Yy2tm5nyFGVd44XcCrn3v4rRTjZvJ9xPsSzDR6JYipltzG0xHho5ap7at8McHKlThSmvkNnCyQVjhEFKlEHeKKq-TIWLjSQUjdsSPz9jBqze125rHpdGr5ypj0-KY1AA3xPjjzRL0cYB2zSqA_UvZd-nm_WsT808nitro8jV1NCxSzd2cDBJ4HZWFT_UMULhVUJVW6fZDjLzilogjmfzADUyS0S-igo9PU6HnlnyWrszrIVb4S0mDbj35ckYjm4_9xM2FA8BBbkYmj2VmzLP5QdiVcZPg3Z1PIY
+@locationId = WjE2vwuRjOgB2AKofzpd
+
+### Create a Calendar Event
+POST {{baseUrl}}/calendars
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+Version: 2021-04-15
+
+{
+  "notifications": [
+    {
+      "type": "email",
+      "shouldSendToContact": true,
+      "shouldSendToGuest": true,
+      "shouldSendToUser": true,
+      "shouldSendToSelectedUsers": true,
+      "selectedUsers": "user1@testemail.com,user2@testemail.com"
+    }
+  ],
+  "locationId": "{{locationId}}",
+  "groupId": "BqTwX8QFwXzpegMve9EQ",
+  "teamMembers": [
+    {
+      "userId": "{{locationId}}",
+      "priority": 0.5,
+      "meetingLocationType": "custom",
+      "meetingLocation": "Conference Room A",
+      "isPrimary": true
+    }
+  ],
+  "eventType": "RoundRobin_OptimizeForAvailability",
+  "name": "Team Meeting",
+  "description": "This is a team meeting to discuss project updates.",
+  "slug": "team-meeting",
+  "widgetSlug": "team-meeting",
+  "calendarType": "round_robin",
+  "widgetType": "classic",
+  "eventTitle": "{{contact.name}}",
+  "eventColor": "#039be5",
+  "slotDuration": 30,
+  "preBufferUnit": "mins",
+  "slotInterval": 30,
+  "slotBuffer": 0,
+  "preBuffer": 10,
+  "appoinmentPerSlot": 1,
+  "appoinmentPerDay": 5,
+  "openHours": [
+    {
+      "daysOfTheWeek": [0, 1, 2, 3, 4],
+      "hours": [
+        {
+          "openHour": 9,
+          "openMinute": 0,
+          "closeHour": 17,
+          "closeMinute": 0
+        }
+      ]
+    }
+  ],
+  "enableRecurring": true,
+  "recurring": {
+    "type": "WEEKLY",
+    "interval": 1,
+    "daysOfWeek": ["MONDAY", "TUESDAY"]
+  },
+  "formId": "string",
+  "stickyContact": true,
+  "isLivePaymentMode": true,
+  "autoConfirm": true,
+  "shouldSendAlertEmailsToAssignedMember": true,
+  "alertEmail": "alerts@yourcompany.com",
+  "googleInvitationEmails": false,
+  "allowReschedule": true,
+  "allowCancellation": true,
+  "shouldAssignContactToTeamMember": true,
+  "shouldSkipAssigningContactForExisting": true,
+  "notes": "Bring all necessary documents.",
+  "pixelId": "string",
+  "formSubmitType": "ThankYouMessage",
+  "formSubmitRedirectURL": "https://yourcompany.com/thank-you",
+  "formSubmitThanksMessage": "Thank you for scheduling!",
+  "availabilityType": "STANDARD",
+  "availabilities": [
+    {
+      "id": "string",
+      "date": "2023-09-24T00:00:00.000Z",
+      "hours": [
+        {
+          "openHour": 0,
+          "openMinute": 0,
+          "closeHour": 0,
+          "closeMinute": 0
+        }
+      ],
+      "deleted": false
+    }
+  ],
+  "guestType": "count_only",
+  "consentLabel": "I agree to the terms and conditions.",
+  "calendarCoverImage": "https://path-to-image.com"
+}

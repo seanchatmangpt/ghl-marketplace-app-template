@@ -1,0 +1,118 @@
+{
+  "contacts": [
+    {
+      "id": "seD4PfOuKoVMLkEZqohJ",
+      "firstName": "Rubika",
+      "lastName": "Deo",
+      "email": "rubika@deos.com",
+      "emailLowerCase": "rubika@deos.com",
+      "timezone": "",
+      "companyName": "DGS VolMAX",
+      "phone": "+18832327657",
+      "dnd": true,
+      "dndSettings": {
+        "Call": {
+          "status": "active",
+          "message": "string",
+          "code": "string"
+        },
+        "Email": {
+          "status": "active",
+          "message": "string",
+          "code": "string"
+        },
+        "SMS": {
+          "status": "active",
+          "message": "string",
+          "code": "string"
+        },
+        "WhatsApp": {
+          "status": "active",
+          "message": "string",
+          "code": "string"
+        },
+        "GMB": {
+          "status": "active",
+          "message": "string",
+          "code": "string"
+        },
+        "FB": {
+          "status": "active",
+          "message": "string",
+          "code": "string"
+        }
+      },
+      "type": "read",
+      "source": "public api",
+      "assignedTo": "ve9EPM428h8vShlRW1KT",
+      "address1": "3535 1st St N",
+      "city": "ruDolomitebika",
+      "state": "AL",
+      "country": "US",
+      "postalCode": "35061",
+      "website": "https://www.tesla.com",
+      "tags": [
+        "nisi sint commodo amet",
+        "consequat"
+      ],
+      "dateOfBirth": "1990-09-25T00:00:00.000Z",
+      "dateAdded": "2021-07-02T05:18:26.704Z",
+      "dateUpdated": "2021-07-02T05:18:26.704Z",
+      "attachments": "string",
+      "ssn": "string",
+      "gender": "male",
+      "keyword": "test",
+      "firstNameLowerCase": "rubika",
+      "fullNameLowerCase": "rubika deo",
+      "lastNameLowerCase": "deo",
+      "lastActivity": "2021-07-16T11:39:30.564Z",
+      "customFields": [
+        {
+          "id": "MgobCB14YMVKuE4Ka8p1",
+          "value": "name"
+        }
+      ],
+      "businessId": "641c094001436dbc2081e642",
+      "attributionSource": {
+        "url": "Trigger Link",
+        "campaign": "string",
+        "utmSource": "string",
+        "utmMedium": "string",
+        "utmContent": "string",
+        "referrer": "https://www.google.com",
+        "campaignId": "string",
+        "fbclid": "string",
+        "gclid": "CjOKCQjwnNyUBhCZARISAI9AYIFtNnIcWcYGIOQINz_ZoFI5SSLRRugSoPZoiEu27IZBY£1-MAIWmEaAo2VEALW_WCB",
+        "msclikid": "string",
+        "dclid": "string",
+        "fbc": "string",
+        "fbp": "fb.1.1674748390986.1171287961",
+        "fbEventId": "Mozilla/5.0",
+        "userAgent": "Mozilla/5.0",
+        "ip": "58.111.106.198",
+        "medium": "survey",
+        "mediumId": "FglfHAn30PRwsZVyQlKp"
+      },
+      "lastAttributionSource": {
+        "url": "Trigger Link",
+        "campaign": "string",
+        "utmSource": "string",
+        "utmMedium": "string",
+        "utmContent": "string",
+        "referrer": "https://www.google.com",
+        "campaignId": "string",
+        "fbclid": "string",
+        "gclid": "CjOKCQjwnNyUBhCZARISAI9AYIFtNnIcWcYGIOQINz_ZoFI5SSLRRugSoPZoiEu27IZBY£1-MAIWmEaAo2VEALW_WCB",
+        "msclikid": "string",
+        "dclid": "string",
+        "fbc": "string",
+        "fbp": "fb.1.1674748390986.1171287961",
+        "fbEventId": "Mozilla/5.0",
+        "userAgent": "Mozilla/5.0",
+        "ip": "58.111.106.198",
+        "medium": "survey",
+        "mediumId": "FglfHAn30PRwsZVyQlKp"
+      }
+    }
+  ]
+}

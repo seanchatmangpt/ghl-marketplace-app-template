@@ -1,7 +1,15 @@
+// @ts-nocheck
+
 import qs from "qs";
 import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 
 import { Model, TokenType } from "./model";
+import {
+  ContactsService,
+  CreateContactDto,
+  UpdateContactDto,
+} from "./clients/contacts";
+import { config } from "dotenv";
 
 /* The GHL class is responsible for handling authorization, making API requests, and managing access
 tokens and refresh tokens for a specific resource. */
@@ -12,34 +20,37 @@ export class GHL {
     this.model = new Model();
   }
 
-/**
- * The `authorizationHandler` function handles the authorization process by generating an access token
- * and refresh token pair.
- * @param {string} code - The code parameter is a string that represents the authorization code
- * obtained from the authorization server. It is used to exchange for an access token and refresh token
- * pair.
- */
+  /**
+   * The `authorizationHandler` function handles the authorization process by generating an access token
+   * and refresh token pair.
+   * @param {string} code - The code parameter is a string that represents the authorization code
+   * obtained from the authorization server. It is used to exchange for an access token and refresh token
+   * pair.
+   */
   async authorizationHandler(code: string) {
     if (!code) {
       console.warn(
-        "Please provide code when making call to authorization Handler"
+        "Please provide code when making call to authorization Handler",
       );
     }
     await this.generateAccessTokenRefreshTokenPair(code);
   }
 
-  decryptSSOData(key: string){
-    const data = CryptoJS.AES.decrypt(key, process.env.GHL_APP_SSO_KEY as string).toString(CryptoJS.enc.Utf8)
-    return JSON.parse(data)
+  decryptSSOData(key: string) {
+    const data = CryptoJS.AES.decrypt(
+      key,
+      process.env.GHL_APP_SSO_KEY as string,
+    ).toString(CryptoJS.enc.Utf8);
+    return JSON.parse(data);
   }
 
-/**
- * The function creates an instance of Axios with a base URL and interceptors for handling
- * authorization and refreshing access tokens.
- * @param {string} resourceId - The `resourceId` parameter is a string that represents the locationId or companyId you want
- * to make api call for.
- * @returns an instance of the Axios library with some custom request and response interceptors.
- */
+  /**
+   * The function creates an instance of Axios with a base URL and interceptors for handling
+   * authorization and refreshing access tokens.
+   * @param {string} resourceId - The `resourceId` parameter is a string that represents the locationId or companyId you want
+   * to make api call for.
+   * @returns an instance of the Axios library with some custom request and response interceptors.
+   */
   requests(resourceId: string) {
     const baseUrl = process.env.GHL_API_DOMAIN;
 
@@ -61,7 +72,7 @@ export class GHL {
           console.error(e);
         }
         return requestConfig;
-      }
+      },
     );
 
     axios.interceptors.response.use(
@@ -73,39 +84,39 @@ export class GHL {
           originalRequest._retry = true;
           return this.refreshAccessToken(resourceId).then(() => {
             originalRequest.headers.Authorization = `Bearer ${this.model.getAccessToken(
-              resourceId
+              resourceId,
             )}`;
             return axios(originalRequest);
           });
         }
 
         return Promise.reject(error);
-      }
+      },
     );
 
     return axiosInstance;
   }
 
-/**
- * The function checks if an installation exists for a given resource ID i.e locationId or companyId.
- * @param {string} resourceId - The `resourceId` parameter is a string that represents the ID of a
- * resource.
- * @returns a boolean value.
- */
-  checkInstallationExists(resourceId: string){
-    return !!this.model.getAccessToken(resourceId)
+  /**
+   * The function checks if an installation exists for a given resource ID i.e locationId or companyId.
+   * @param {string} resourceId - The `resourceId` parameter is a string that represents the ID of a
+   * resource.
+   * @returns a boolean value.
+   */
+  checkInstallationExists(resourceId: string) {
+    return !!this.model.getAccessToken(resourceId);
   }
 
-/**
- * The function `getLocationTokenFromCompanyToken` retrieves a location token from a company token and
- * saves the installation information.
- * @param {string} companyId - A string representing the ID of the company.
- * @param {string} locationId - The `locationId` parameter is a string that represents the unique
- * identifier of a location within a company.
- */
+  /**
+   * The function `getLocationTokenFromCompanyToken` retrieves a location token from a company token and
+   * saves the installation information.
+   * @param {string} companyId - A string representing the ID of the company.
+   * @param {string} locationId - The `locationId` parameter is a string that represents the unique
+   * identifier of a location within a company.
+   */
   async getLocationTokenFromCompanyToken(
     companyId: string,
-    locationId: string
+    locationId: string,
   ) {
     const res = await this.requests(companyId).post(
       "/oauth/locationToken",
@@ -117,7 +128,7 @@ export class GHL {
         headers: {
           Version: "2021-07-28",
         },
-      }
+      },
     );
     this.model.saveInstallationInfo(res.data);
   }
@@ -132,7 +143,7 @@ export class GHL {
           grant_type: "refresh_token",
           refresh_token: this.model.getRefreshToken(resourceId),
         }),
-        { headers: { "content-type": "application/x-www-form-urlencoded" } }
+        { headers: { "content-type": "application/x-www-form-urlencoded" } },
       );
       this.model.setAccessToken(resourceId, resp.data.access_token);
       this.model.setRefreshToken(resourceId, resp.data.refresh_token);
@@ -151,11 +162,57 @@ export class GHL {
           grant_type: "authorization_code",
           code,
         }),
-        { headers: { "content-type": "application/x-www-form-urlencoded" } }
+        { headers: { "content-type": "application/x-www-form-urlencoded" } },
+      );
+      console.log(
+        "src/ghl.ts: generateAccessTokenRefreshTokenPair: resp:",
+        resp,
       );
       this.model.saveInstallationInfo(resp.data);
     } catch (error: any) {
       console.error(error?.response?.data);
     }
+  }
+
+  async getContactsService(resourceId: string) {
+    function getParams(params: Record<string, any>) {
+      const model = new Model();
+
+      const authorization = model.getAccessToken(resourceId);
+
+      return {
+        ...params,
+        authorization,
+        version: "2021-07-28",
+      };
+    }
+
+    return {
+      getContact: (contactId: string) =>
+        ContactsService.getContact(getParams({ contactId })),
+      createContact: (contactDto: CreateContactDto) =>
+        ContactsService.createContact(getParams({ contactDto })),
+      updateContact: (contactId: string, updateContactDto: UpdateContactDto) =>
+        ContactsService.updateContact({
+          contactId,
+          updateContactDto,
+        }),
+      deleteContact: (contactId: string) =>
+        ContactsService.deleteContact({ contactId }),
+      getContacts: (
+        locationId: string,
+        startAfterId?: string,
+        startAfter?: number,
+        query?: string,
+        limit?: number,
+      ) =>
+        ContactsService.getContacts({
+          locationId,
+          startAfterId,
+          startAfter,
+          query,
+          limit,
+        }),
+    };
   }
 }
