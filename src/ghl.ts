@@ -54,10 +54,6 @@ export class GHL {
   requests(resourceId: string) {
     const baseUrl = process.env.GHL_API_DOMAIN;
 
-    if (!this.model.getAccessToken(resourceId)) {
-      throw new Error("Installation not found for the following resource");
-    }
-
     const axiosInstance = axios.create({
       baseURL: baseUrl,
     });

@@ -3,14 +3,15 @@ for handling HTTP requests. */
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { GHL } from "./ghl";
-import * as CryptoJS from 'crypto-js'
+import * as CryptoJS from "crypto-js";
 import { json } from "body-parser";
+import { faker } from "@faker-js/faker";
 
 const path = __dirname + "/ui/dist/";
 
 dotenv.config();
 const app: Express = express();
-app.use(json({ type: 'application/json' }))
+app.use(json({ type: "application/json" }));
 
 /*`app.use(express.static(path));` is setting up a middleware in the Express server. The
 `express.static` middleware is used to serve static files such as HTML, CSS, JavaScript, and images. */
@@ -23,13 +24,14 @@ const ghl = new GHL();
 
 const port = process.env.PORT;
 
-
 const CLIENT_ID = process.env.GHL_APP_CLIENT_ID || "";
 const REDIRECT_URI = "http://localhost:3000/authorize-handler";
 const SCOPES = [
   "conversations/message.readonly",
   "conversations/message.write",
   "users.readonly",
+  "contacts.readonly",
+  "contacts.write",
 ];
 
 /**
@@ -42,7 +44,7 @@ function constructAuthUrl(): string {
     response_type: "code",
     redirect_uri: REDIRECT_URI,
     client_id: CLIENT_ID,
-    scope: SCOPES.join(" ")
+    scope: SCOPES.join(" "),
   });
   return `${baseUrl}?${params.toString()}`;
 }
@@ -86,6 +88,57 @@ app.get("/example-api-call", async (req: Request, res: Response) => {
   return res.send("Installation for this company does not exists");
 });
 
+app.get("/upsert", async (req: Request, res: Response) => {
+  try {
+    const contactData = {
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+      email: faker.internet.email(),
+      locationId: req.query.companyId as string,
+      gender: faker.name.sexType(),
+      phone: faker.phone.number("+1 ### ### ####"),
+      address1: faker.address.streetAddress(),
+      city: faker.address.city(),
+      state: faker.address.stateAbbr(),
+      postalCode: faker.address.zipCode(),
+      website: faker.internet.url(),
+      timezone: faker.address.timeZone(),
+      dnd: faker.datatype.boolean(),
+      tags: [faker.random.word(), faker.random.word()],
+      customFields: [
+        {
+          id: faker.datatype.uuid(),
+          key: "my_custom_field",
+          field_value: faker.phone.number(),
+        },
+      ],
+      source: "public api",
+      country: "US",
+      companyName: faker.company.name(),
+    };
+
+    const request = await ghl
+      .requests("rwFP2uvWfxtt9N5N7nDa")
+      .post(
+        "https://services.leadconnectorhq.com/contacts/upsert",
+        contactData,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`, // Ensure you set this environment variable with a valid access token
+            Version: "2021-07-28",
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+    return res.send(request.data);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Failed to upsert contact.");
+  }
+});
+
 /*`app.get("/example-api-call-location", async (req: Request, res: Response) => { ... })` shows you how you can use ghl object to make get requests
  ghl object in abstract would handle all of the authorization part over here. */
 app.get("/example-api-call-location", async (req: Request, res: Response) => {
@@ -111,7 +164,7 @@ app.get("/example-api-call-location", async (req: Request, res: Response) => {
         `GHL` class. This method is used to retrieve the location token for a specific location within a company. */
       await ghl.getLocationTokenFromCompanyToken(
         req.query.companyId as string,
-        req.query.locationId as string
+        req.query.locationId as string,
       );
       const request = await ghl
         .requests(req.query.locationId as string)
@@ -124,7 +177,7 @@ app.get("/example-api-call-location", async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.log(error);
-    res.send(error).status(400)
+    res.send(error).status(400);
   }
 });
 
@@ -132,26 +185,25 @@ app.get("/example-api-call-location", async (req: Request, res: Response) => {
     console.log(req.body)
 })` sets up a route for handling HTTP POST requests to the "/example-webhook-handler" endpoint. The below POST
 api can be used to subscribe to various webhook events configured for the app. */
-app.post("/example-webhook-handler",async (req: Request, res: Response) => {
-    console.log(req.body)
-})
-
+app.post("/example-webhook-handler", async (req: Request, res: Response) => {
+  console.log(req.body);
+});
 
 /* The `app.post("/decrypt-sso",async (req: Request, res: Response) => { ... })` route is used to
 decrypt session details using ssoKey. */
-app.post("/decrypt-sso",async (req: Request, res: Response) => {
-  const {key} = req.body || {}
-  if(!key){
-    return res.status(400).send("Please send valid key")
+app.post("/decrypt-sso", async (req: Request, res: Response) => {
+  const { key } = req.body || {};
+  if (!key) {
+    return res.status(400).send("Please send valid key");
   }
   try {
-    const data = ghl.decryptSSOData(key)
-    res.send(data)
+    const data = ghl.decryptSSOData(key);
+    res.send(data);
   } catch (error) {
-    res.status(400).send("Invalid Key")
-    console.log(error)  
+    res.status(400).send("Invalid Key");
+    console.log(error);
   }
-})
+});
 
 /*`app.get("/", function (req, res) {
   res.sendFile(path + "index.html");

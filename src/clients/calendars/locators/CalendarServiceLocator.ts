@@ -36,7 +36,8 @@ export class CalendarServiceLocator {
    * @returns an instance of the Axios library with some custom request and response interceptors.
    */
   requests(resourceId: string) {
-    const baseUrl = process.env.GHL_API_DOMAIN;
+    const baseUrl =
+      "https://stoplight.io/mocks/highlevel/integrations/39582850";
 
     if (!this.model.getAccessToken(resourceId)) {
       throw new Error("Installation not found for the following resource");
@@ -81,7 +82,7 @@ export class CalendarServiceLocator {
   private async refreshAccessToken(resourceId: string) {
     try {
       const resp = await axios.post(
-        `${process.env.GHL_API_DOMAIN}/oauth/token`,
+        `https://stoplight.io/mocks/highlevel/integrations/39582850/oauth/token`,
         qs.stringify({
           client_id: process.env.GHL_APP_CLIENT_ID,
           client_secret: process.env.GHL_APP_CLIENT_SECRET,

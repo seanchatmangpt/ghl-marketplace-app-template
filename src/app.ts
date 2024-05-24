@@ -6,6 +6,7 @@ import { json } from "body-parser";
 import http from "http";
 import { SearchService } from "./clients/users";
 import { CalendarServiceLocator } from "./clients/calendars/locators/CalendarServiceLocator";
+import { faker } from "@faker-js/faker";
 
 dotenv.config();
 
@@ -23,14 +24,6 @@ const SCOPES = [
   "users.readonly",
   "contacts.readonly",
   "contacts.write",
-  "calendars.readonly",
-  "calendars.write",
-  "calendars/groups.readonly",
-  "calendars/groups.write",
-  "calendars/resources.readonly",
-  "calendars/resources.write",
-  "calendars/events.readonly",
-  "calendars/events.write",
 ];
 
 function constructAuthUrl(): string {
@@ -60,12 +53,12 @@ app.get("/authorize-handler", async (req: Request, res: Response) => {
 });
 
 app.get("/example-api-call", async (req: Request, res: Response) => {
-  const { companyId } = req.query;
-  const resourceId: string = companyId as string;
+  // const { companyId } = req.query;
+  // const resourceId: string = companyId as string;
   const cls = new CalendarServiceLocator();
 
   const cals = await cls
-    .getCalendarsService(resourceId)
+    .getCalendarsService("123")
     .getCalendar("tQFpDJNmmvYaF4q9EIen");
   res.send(cals);
   //   try {
@@ -81,6 +74,56 @@ app.get("/example-api-call", async (req: Request, res: Response) => {
   //   }
   // }
   // return res.status(400).send("Installation for this company does not exist");
+});
+
+app.get("/upsert", async (req: Request, res: Response) => {
+  if (true) {
+    try {
+      const contactData = {
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+        email: faker.internet.email(),
+        locationId: "WjE2vwuRjOgB2AKofzpd",
+        gender: faker.name.sexType(),
+        phone: faker.phone.number("+1 ### ### ####"),
+        address1: faker.address.streetAddress(),
+        city: faker.address.city(),
+        state: faker.address.stateAbbr(),
+        postalCode: faker.address.zipCode(),
+        website: faker.internet.url(),
+        timezone: faker.address.timeZone(),
+        dnd: faker.datatype.boolean(),
+        tags: [faker.random.word(), faker.random.word()],
+        customFields: [
+          {
+            id: faker.datatype.uuid(),
+            key: "my_custom_field",
+            field_value: faker.phone.number(),
+          },
+        ],
+        source: "public api",
+        country: "US",
+        companyName: faker.company.name(),
+      };
+
+      const request = await ghl
+        .requests("WjE2vwuRjOgB2AKofzpd")
+        .post("/contacts/upsert", contactData, {
+          headers: {
+            Version: "2021-07-28",
+            "Content-Type": "application/json",
+          },
+        });
+
+      return res.send(request.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send("Failed to upsert contact.");
+    }
+  } else {
+    return res.send("Installation for this company does not exist.");
+  }
 });
 
 app.get("/example-api-call-location", async (req: Request, res: Response) => {
